@@ -24,22 +24,17 @@ def probability_distribution(picknumber):
     
     return distribution
 
-def weighted_choice(distribution):
-    r = random.random()
-    cumulative_probability = 0.0
-    for key, probability in distribution.items():
-        cumulative_probability += probability
-        if r < cumulative_probability:
-            return key
-    return key
-
 def generate_numbers(picknumber, maxnumber, powerball=False, maxnumberp=20):
     suggested_numbers = []
-    distribution = probability_distribution(picknumber)
 
     for _ in range(SUGGEST):
-        odd_count, even_count = weighted_choice(distribution)
+        # Determine odd and even count based on PICKNUMBER
+        if picknumber % 2 == 0:
+            odd_count, even_count = picknumber // 2, picknumber // 2
+        else:
+            odd_count, even_count = random.choice([(picknumber // 2 + 1, picknumber // 2), (picknumber // 2, picknumber // 2 + 1)])
         
+        # Generate odd and even numbers
         odds = [num for num in range(1, maxnumber+1) if num % 2 != 0]
         evens = [num for num in range(1, maxnumber+1) if num % 2 == 0]
         
@@ -62,8 +57,7 @@ lottery_numbers = generate_numbers(PICKNUMBER, MAXNUMBER, POWERBALL, MAXNUMBERP)
 print(f"Suggested lottery numbers: {lottery_numbers}")
 
 # Calculate and display distribution probabilities
-if PICKNUMBER > 6:
-    distribution = probability_distribution(PICKNUMBER)
-    print("Probability distribution for odd/even splits:")
-    for key, probability in distribution.items():
-        print(f"{key}: {probability:.4f}")
+distribution = probability_distribution(PICKNUMBER)
+print("Probability distribution for odd/even splits:")
+for key, probability in distribution.items():
+    print(f"{key}: {probability:.4f}")
