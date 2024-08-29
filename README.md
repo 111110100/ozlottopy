@@ -24,3 +24,6 @@ Or from the command line:
 ```bash
 SUGGEST=10 python ozlottories.py
 ```
+
+## Sample output
+![Sample output of the script](https://raw.githubusercontent.com/111110100/ozlottopy/main/sample.png)
