@@ -1,7 +1,6 @@
 import os
 import random
 import csv
-import json
 from collections import Counter
 from math import comb
 from dotenv import load_dotenv
@@ -149,10 +148,6 @@ def draw_odd_even_distribution_graph(odd_even_counts, picknumber):
 # Load lottery data based on LOTTO value
 frequency, powerball_frequency, draws = load_lotto_data(LOTTO)
 
-# Generate and display lottery numbers
-lottery_numbers = generate_numbers(PICKNUMBER, MAXNUMBER, POWERBALL, MAXNUMBERP, frequency, powerball_frequency)
-print(f"Suggested lottery numbers: {json.dumps(lottery_numbers, indent=4)}")
-
 # Draw frequency graph
 print("\nFrequency Graph:")
 draw_frequency_graph(frequency)
@@ -171,3 +166,9 @@ odd_even_counts = count_odd_even_distribution(draws, PICKNUMBER)
 
 # Draw the odd/even distribution graph
 draw_odd_even_distribution_graph(odd_even_counts, PICKNUMBER)
+
+# Generate and display lottery numbers
+lottery_numbers = generate_numbers(PICKNUMBER, MAXNUMBER, POWERBALL, MAXNUMBERP, frequency, powerball_frequency)
+print(f"\nSuggested lottery numbers:")
+for lottery_number in lottery_numbers:
+    print(lottery_number)
