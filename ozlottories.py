@@ -59,6 +59,8 @@ def load_lotto_data(lotto_type):
 
     return frequency, powerball_frequency
 
+import json
+
 def generate_numbers(picknumber, maxnumber, powerball=False, maxnumberp=20, frequency=None, powerball_frequency=None):
     suggested_numbers = []
 
@@ -78,19 +80,37 @@ def generate_numbers(picknumber, maxnumber, powerball=False, maxnumberp=20, freq
         
         numbers = sorted(chosen_odds + chosen_evens)
         
-        # Generate the associated weights
-        weights = {num: frequency.get(num, 1) for num in numbers}
-        
         # Add powerball number if required, ensuring no repeat
         if powerball:
             available_powerballs = set(range(1, maxnumberp + 1)) - set(numbers)
             powerball_num = random.choices(list(available_powerballs), weights=[powerball_frequency.get(num, 1) for num in available_powerballs], k=1)[0]
-            numbers.append(powerball_num)
-            weights[powerball_num] = powerball_frequency.get(powerball_num, 1)
+            numbers.append(f"Powerball: {powerball_num}")
         
-        suggested_numbers.append({"numbers": numbers, "weights": weights})
+        suggested_numbers.append(numbers)
 
-    return json.dumps(suggested_numbers, indent=4)
+    return suggested_numbers
+
+def draw_frequency_graph(frequency):
+    max_freq = max(frequency.values())
+    for number in sorted(frequency.keys()):
+        bar = "#" * (frequency[number] * 50 // max_freq)  # Scale bar length to a max of 50
+        print(f"{number:2}: {bar} ({frequency[number]})")
+
+def draw_powerball_frequency_graph(powerball_frequency):
+    if not powerball_frequency:
+        print("No Powerball frequency data available.")
+        return
+
+    max_freq = max(powerball_frequency.values())
+    for number in sorted(powerball_frequency.keys()):
+        bar = "#" * (powerball_frequency[number] * 50 // max_freq)  # Scale bar length to a max of 50
+        print(f"{number:2}: {bar} ({powerball_frequency[number]})")
+
+def draw_distribution_graph(distribution):
+    max_prob = max(distribution.values())
+    for key in sorted(distribution.keys()):
+        bar = "#" * int(distribution[key] * 50 / max_prob)  # Scale bar length to a max of 50
+        print(f"{key}: {bar} ({distribution[key]:.4f})")
 
 def probability_distribution(picknumber):
     total_possibilities = 2 ** picknumber
@@ -108,10 +128,17 @@ frequency, powerball_frequency = load_lotto_data(LOTTO)
 
 # Generate and display lottery numbers
 lottery_numbers = generate_numbers(PICKNUMBER, MAXNUMBER, POWERBALL, MAXNUMBERP, frequency, powerball_frequency)
-print(f"Suggested lottery numbers: {lottery_numbers}")
+print(f"Suggested lottery numbers: {json.dumps(lottery_numbers, indent=4)}")
+
+# Draw frequency graph
+print("\nFrequency Graph:")
+draw_frequency_graph(frequency)
+
+if POWERBALL:
+    print("\nPowerball Frequency Graph:")
+    draw_powerball_frequency_graph(powerball_frequency)
 
 # Calculate and display distribution probabilities
 distribution = probability_distribution(PICKNUMBER)
-print("Probability distribution for odd/even splits:")
-for key, probability in distribution.items():
-    print(f"{key}: {probability:.4f}")
+print("\nProbability Distribution Graph:")
+draw_distribution_graph(distribution)
