@@ -53,9 +53,9 @@ def load_lotto_data(lotto_type):
         for row in reader:
             draw = []
             for col in columns:
-                draw.append(int(row[col]))
                 if col != "PB":
                     frequency[int(row[col])] += 1
+                    draw.append(int(row[col]))
                 else:
                     powerball_frequency[int(row[col])] += 1
 
