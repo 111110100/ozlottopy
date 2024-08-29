@@ -35,31 +35,34 @@ SUGGEST = int(os.getenv("SUGGEST", 1))
 def load_lotto_data(lotto_type):
     frequency = Counter()
     powerball_frequency = Counter()
+    draws = []
 
     if lotto_type == "tuesday":
         csv_file = "tuesday.csv"
-        columns = ["#1", "#2", "#3", "#4", "#5", "#6", "#7", "S1", "S2", "S3"]
+        columns = ["#1", "#2", "#3", "#4", "#5", "#6", "#7"]
     elif lotto_type == "thursday":
         csv_file = "thursday.csv"
         columns = ["#1", "#2", "#3", "#4", "#5", "#6", "#7", "PB"]
     elif lotto_type == "saturday":
         csv_file = "saturday.csv"
-        columns = ["#1", "#2", "#3", "#4", "#5", "#6", "S1", "S2"]
+        columns = ["#1", "#2", "#3", "#4", "#5", "#6"]
     else:
         return frequency, powerball_frequency
 
     with open(csv_file, mode='r') as file:
         reader = csv.DictReader(file)
         for row in reader:
+            draw = []
             for col in columns:
+                draw.append(int(row[col]))
                 if col != "PB":
                     frequency[int(row[col])] += 1
                 else:
                     powerball_frequency[int(row[col])] += 1
 
-    return frequency, powerball_frequency
+            draws.append(draw)
 
-import json
+    return frequency, powerball_frequency, draws
 
 def generate_numbers(picknumber, maxnumber, powerball=False, maxnumberp=20, frequency=None, powerball_frequency=None):
     suggested_numbers = []
@@ -90,6 +93,16 @@ def generate_numbers(picknumber, maxnumber, powerball=False, maxnumberp=20, freq
 
     return suggested_numbers
 
+def count_odd_even_distribution(data, picknumber):
+    odd_even_counts = Counter()
+
+    for row in data:
+        odds = sum(1 for num in row if num % 2 != 0)
+        evens = picknumber - odds
+        odd_even_counts[(odds, evens)] += 1
+
+    return odd_even_counts
+
 def draw_frequency_graph(frequency):
     max_freq = max(frequency.values())
     for number in sorted(frequency.keys()):
@@ -110,7 +123,7 @@ def draw_distribution_graph(distribution):
     max_prob = max(distribution.values())
     for key in sorted(distribution.keys()):
         bar = "#" * int(distribution[key] * 50 / max_prob)  # Scale bar length to a max of 50
-        print(f"{key}: {bar} ({distribution[key]:.4f})")
+        print(f"{key[0]} odd, {key[1]} even: {bar} ({distribution[key]:.4f})")
 
 def probability_distribution(picknumber):
     total_possibilities = 2 ** picknumber
@@ -123,8 +136,18 @@ def probability_distribution(picknumber):
 
     return distribution
 
+def draw_odd_even_distribution_graph(odd_even_counts, picknumber):
+    max_count = max(odd_even_counts.values())
+
+    print(f"\nOdd-Even Distribution for PICKNUMBER={picknumber} based from previous draws:")
+    for odd_count in range(picknumber + 1):
+        even_count = picknumber - odd_count
+        count = odd_even_counts.get((odd_count, even_count), 0)
+        bar = "#" * (count * 50 // max_count)  # Scale bar length to a max of 50
+        print(f"{odd_count} odd, {even_count} even: {bar} ({count})")
+
 # Load lottery data based on LOTTO value
-frequency, powerball_frequency = load_lotto_data(LOTTO)
+frequency, powerball_frequency, draws = load_lotto_data(LOTTO)
 
 # Generate and display lottery numbers
 lottery_numbers = generate_numbers(PICKNUMBER, MAXNUMBER, POWERBALL, MAXNUMBERP, frequency, powerball_frequency)
@@ -142,3 +165,9 @@ if POWERBALL:
 distribution = probability_distribution(PICKNUMBER)
 print("\nProbability Distribution Graph:")
 draw_distribution_graph(distribution)
+
+# Count the odd/even distribution
+odd_even_counts = count_odd_even_distribution(draws, PICKNUMBER)
+
+# Draw the odd/even distribution graph
+draw_odd_even_distribution_graph(odd_even_counts, PICKNUMBER)
