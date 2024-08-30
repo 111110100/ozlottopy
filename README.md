@@ -12,7 +12,7 @@ Historical draws were taken from the following sources
 |Saturday|[Tatts](https://gnetwork.com.au/lotto-results/)
 
 ## Text-based bar graph
-The script also generates a bar graph with the drawn frequency of each number. These frequencies are used as weights to help suggest numbers. It also generates probability distribution of winning odd/even number combinations vs the actual drawn numbers.
+The script also generates a bar graph with the drawn frequency of each number. These frequencies can used as weights to help suggest numbers if ```USEWEIGHTS``` is set to ```true```. It also generates probability distribution of winning odd/even number combinations vs the actual drawn numbers.
 
 ## Environment variables
 You can use a .env file with the following values:
@@ -25,7 +25,7 @@ You can use a .env file with the following values:
 if ```USEWEIGHT``` is set to true, it will use the historical draws as weights to randomly select numbers.
 
 ## Command line
-Or from the command line:
+to override the .env file, use it from the command line:
 ```bash
 SUGGEST=10 python ozlottories.py
 ```
