@@ -10,6 +10,7 @@ load_dotenv()
 
 # Set default values based on LOTTO
 LOTTO = os.getenv("LOTTO", "").lower()
+USEWEIGHTS = os.getenv("USEWEIGHTS", "false").lower() == "true"
 
 if LOTTO == "tuesday":
     PICKNUMBER = 7
@@ -77,8 +78,26 @@ def generate_numbers(picknumber, maxnumber, powerball=False, maxnumberp=20, freq
         odds = [num for num in range(1, maxnumber+1) if num % 2 != 0]
         evens = [num for num in range(1, maxnumber+1) if num % 2 == 0]
         
-        chosen_odds = random.sample(odds, odd_count)
-        chosen_evens = random.sample(evens, even_count)
+        if USEWEIGHTS:
+            # Use frequency as weights to select odd and even numbers
+            chosen_odds = random.choices(odds, weights=[frequency.get(num, 1) for num in odds], k=odd_count)
+            chosen_evens = random.choices(evens, weights=[frequency.get(num, 1) for num in evens], k=even_count)
+            # Ensure no duplicates in the chosen numbers
+            chosen_odds = list(set(chosen_odds))
+            chosen_evens = list(set(chosen_evens))
+            # If duplicates were removed and the list lengths are short, replenish with random choices
+            while len(chosen_odds) < odd_count:
+                new_odd = random.choices(odds, weights=[frequency.get(num, 1) for num in odds], k=1)[0]
+                if new_odd not in chosen_odds:
+                    chosen_odds.append(new_odd)
+                            
+            while len(chosen_evens) < even_count:
+                new_even = random.choices(evens, weights=[frequency.get(num, 1) for num in evens], k=1)[0]
+                if new_even not in chosen_evens:
+                    chosen_evens.append(new_even)
+        else:
+            chosen_odds = random.sample(odds, odd_count)
+            chosen_evens = random.sample(evens, even_count)
         
         numbers = sorted(chosen_odds + chosen_evens)
         
@@ -138,12 +157,29 @@ def probability_distribution(picknumber):
 def draw_odd_even_distribution_graph(odd_even_counts, picknumber):
     max_count = max(odd_even_counts.values())
 
-    print(f"\nOdd-Even Distribution for PICKNUMBER={picknumber} based from previous draws:")
     for odd_count in range(picknumber + 1):
         even_count = picknumber - odd_count
         count = odd_even_counts.get((odd_count, even_count), 0)
         bar = "#" * (count * 50 // max_count)  # Scale bar length to a max of 50
         print(f"{odd_count} odd, {even_count} even: {bar} ({count})")
+
+def has_consecutive_numbers(numbers, count=3):
+    # Sort the numbers to ensure they are in ascending order
+    numbers.sort()
+
+    # Initialize a counter for consecutive numbers
+    consecutive_count = 1
+
+    # Iterate through the sorted list and check for consecutive sequences
+    for i in range(1, len(numbers)):
+        if numbers[i] == numbers[i - 1] + 1:
+            consecutive_count += 1
+            if consecutive_count >= count:
+                return f"{numbers} - consecutive numbers found"
+        else:
+            consecutive_count = 1  # Reset counter if the sequence breaks
+
+    return numbers
 
 # Load lottery data based on LOTTO value
 frequency, powerball_frequency, draws = load_lotto_data(LOTTO)
@@ -158,17 +194,18 @@ if POWERBALL:
 
 # Calculate and display distribution probabilities
 distribution = probability_distribution(PICKNUMBER)
-print("\nProbability Distribution Graph:")
+print(f"\nProbability Distribution Graph for PICKNUMBER={PICKNUMBER}:")
 draw_distribution_graph(distribution)
 
 # Count the odd/even distribution
 odd_even_counts = count_odd_even_distribution(draws, PICKNUMBER)
 
 # Draw the odd/even distribution graph
+print(f"\nOdd-Even Distribution for PICKNUMBER={PICKNUMBER} based from previous draws:")
 draw_odd_even_distribution_graph(odd_even_counts, PICKNUMBER)
 
 # Generate and display lottery numbers
 lottery_numbers = generate_numbers(PICKNUMBER, MAXNUMBER, POWERBALL, MAXNUMBERP, frequency, powerball_frequency)
 print(f"\nSuggested lottery numbers:")
 for lottery_number in lottery_numbers:
-    print(lottery_number)
+    print(has_consecutive_numbers(lottery_number))
