@@ -187,9 +187,9 @@ def distribution_consecutive_check(numbers, count=3):
 
     s = ""
     if odd_count >= 1:
-        s = f"{numbers}: {odd_count} odd, {len(numbers) - odd_count} even"
+        s = f"{odd_count} odd, {len(numbers) - odd_count} even: {numbers}"
     if consecutive_count >= count:
-        s += " and " + str(consecutive_count) + " consecutive numbers found"
+        s += " * " + str(consecutive_count) + " consecutive numbers found"
     return s
 
 # Load lottery data based on LOTTO value
