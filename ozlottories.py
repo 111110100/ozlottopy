@@ -163,7 +163,7 @@ def draw_odd_even_distribution_graph(odd_even_counts, picknumber):
         bar = "#" * (count * 50 // max_count)  # Scale bar length to a max of 50
         print(f"{odd_count} odd, {even_count} even: {bar} ({count})")
 
-def has_consecutive_numbers(numbers, count=3):
+def distribution_consecutive_check(numbers, count=3):
     # Sort the numbers to ensure they are in ascending order
     numbers.sort()
 
@@ -175,11 +175,22 @@ def has_consecutive_numbers(numbers, count=3):
         if numbers[i] == numbers[i - 1] + 1:
             consecutive_count += 1
             if consecutive_count >= count:
-                return f"{numbers} - consecutive numbers found"
+                break
         else:
             consecutive_count = 1  # Reset counter if the sequence breaks
 
-    return numbers
+    # Count the number of odd numbers
+    odd_count = 0
+    for pick in numbers:
+        if pick % 2 != 0:
+            odd_count += 1
+
+    s = ""
+    if odd_count >= 1:
+        s = f"{numbers}: {odd_count} odd, {len(numbers) - odd_count} even"
+    if consecutive_count >= count:
+        s += " and " + str(consecutive_count) + " consecutive numbers found"
+    return s
 
 # Load lottery data based on LOTTO value
 frequency, powerball_frequency, draws = load_lotto_data(LOTTO)
@@ -208,4 +219,4 @@ draw_odd_even_distribution_graph(odd_even_counts, PICKNUMBER)
 lottery_numbers = generate_numbers(PICKNUMBER, MAXNUMBER, POWERBALL, MAXNUMBERP, frequency, powerball_frequency)
 print(f"\nSuggested lottery numbers:")
 for lottery_number in lottery_numbers:
-    print(has_consecutive_numbers(lottery_number))
+    print(distribution_consecutive_check(lottery_number))
