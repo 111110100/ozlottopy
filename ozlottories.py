@@ -11,6 +11,7 @@ load_dotenv()
 # Set default values based on LOTTO
 LOTTO = os.getenv("LOTTO", "").lower()
 USEWEIGHTS = os.getenv("USEWEIGHTS", "false").lower() == "true"
+RESHUFFLE = os.getenv("RESHUFFLE", "false").lower() == "true"
 
 if LOTTO == "tuesday":
     PICKNUMBER = 7
@@ -80,6 +81,31 @@ def calculate_historical_distribution(data, picknumber):
     probabilities = {k: v / total_draws for k, v in odd_even_counts.items()}
 
     return probabilities
+
+def reshuffle_numbers(lottery_numbers):
+    reshuffled_numbers = []
+
+    # Flatten the list of lists into a single list of numbers
+    all_numbers = [num for sublist in lottery_numbers for num in sublist]
+    picknumber = len(lottery_numbers[0])  # Assume all sets have the same length
+
+    for _ in range(len(lottery_numbers)):
+        valid_combination_found = False
+
+        while not valid_combination_found:
+            # Randomly select numbers
+            selected_numbers = random.sample(all_numbers, picknumber)
+
+            # Calculate the odd and even counts
+            odd_count = sum(1 for num in selected_numbers if num % 2 != 0)
+            even_count = picknumber - odd_count
+
+            # Check that there are at least 2 odd and 2 even numbers
+            if odd_count >= 2 and even_count >= 2:
+                reshuffled_numbers.append(selected_numbers)
+                valid_combination_found = True
+
+    return reshuffled_numbers
 
 def generate_numbers(picknumber, maxnumber, powerball=False, maxnumberp=20, frequency=None, powerball_frequency=None, historical_data=None):
     suggested_numbers = []
@@ -258,6 +284,8 @@ draw_odd_even_distribution_graph(odd_even_counts, PICKNUMBER)
 
 # Generate and display lottery numbers
 lottery_numbers = generate_numbers(PICKNUMBER, MAXNUMBER, POWERBALL, MAXNUMBERP, frequency, powerball_frequency, draws)
-print(f"\nSuggested lottery numbers:")
+if RESHUFFLE and not POWERBALL:
+    lottery_numbers = reshuffle_numbers(lottery_numbers)
+print(f"\nSuggested lottery numbers reshuffled ({RESHUFFLE}):")
 for lottery_number in lottery_numbers:
     print(distribution_consecutive_check(lottery_number))
