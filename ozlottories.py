@@ -286,6 +286,6 @@ draw_odd_even_distribution_graph(odd_even_counts, PICKNUMBER)
 lottery_numbers = generate_numbers(PICKNUMBER, MAXNUMBER, POWERBALL, MAXNUMBERP, frequency, powerball_frequency, draws)
 if RESHUFFLE and not POWERBALL:
     lottery_numbers = reshuffle_numbers(lottery_numbers)
-print(f"\nSuggested lottery numbers reshuffled ({RESHUFFLE}):")
+print(f"\nSuggested lottery numbers, reshuffled ({RESHUFFLE}), weights ({USEWEIGHTS}):")
 for lottery_number in lottery_numbers:
     print(distribution_consecutive_check(lottery_number))
