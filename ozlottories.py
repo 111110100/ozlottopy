@@ -11,7 +11,6 @@ load_dotenv()
 # Set default values based on LOTTO
 LOTTO = os.getenv("LOTTO", "").lower()
 USEWEIGHTS = os.getenv("USEWEIGHTS", "false").lower() == "true"
-RESHUFFLE = os.getenv("RESHUFFLE", "false").lower() == "true"
 
 if LOTTO == "tuesday":
     PICKNUMBER = 7
@@ -284,8 +283,6 @@ draw_odd_even_distribution_graph(odd_even_counts, PICKNUMBER)
 
 # Generate and display lottery numbers
 lottery_numbers = generate_numbers(PICKNUMBER, MAXNUMBER, POWERBALL, MAXNUMBERP, frequency, powerball_frequency, draws)
-if RESHUFFLE and not POWERBALL:
-    lottery_numbers = reshuffle_numbers(lottery_numbers)
-print(f"\nSuggested lottery numbers, reshuffled ({RESHUFFLE}), weights ({USEWEIGHTS}):")
+print(f"\nSuggested lottery numbers, weights ({USEWEIGHTS}):")
 for lottery_number in lottery_numbers:
     print(distribution_consecutive_check(lottery_number))
