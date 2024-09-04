@@ -4,9 +4,13 @@ import csv
 from collections import Counter
 from math import comb
 from dotenv import load_dotenv
+from rich.console import Console
+from rich.table import Table
 
 # Load environment variables
 load_dotenv()
+
+console = Console()
 
 # Set default values based on LOTTO
 LOTTO = os.getenv("LOTTO", "").lower()
@@ -166,7 +170,7 @@ def generate_numbers(picknumber, maxnumber, powerball=False, maxnumberp=20, freq
         if powerball:
             available_powerballs = set(range(1, maxnumberp + 1)) - set(numbers)
             powerball_num = random.choices(list(available_powerballs), weights=[powerball_frequency.get(num, 1) for num in available_powerballs], k=1)[0]
-            numbers.append(f"Powerball: {powerball_num}")
+            numbers.append(powerball_num)
         
         suggested_numbers.append(numbers)
     
@@ -183,26 +187,39 @@ def count_odd_even_distribution(data, picknumber):
     return odd_even_counts
 
 def draw_frequency_graph(frequency):
+    table_frequency = Table(title="Odd-Even Frequency Graph")
+    table_frequency.add_column("Number", justify="center", style="magenta")
+    table_frequency.add_column("Frequency", justify="left", style="cyan")
     max_freq = max(frequency.values())
     for number in sorted(frequency.keys()):
         bar = "#" * (frequency[number] * 50 // max_freq)  # Scale bar length to a max of 50
-        print(f"{number:2}: {bar} ({frequency[number]})")
+        table_frequency.add_row(f"{number}", f"{bar} ({frequency[number]})")
+    console.print(table_frequency)
 
 def draw_powerball_frequency_graph(powerball_frequency):
     if not powerball_frequency:
         print("No Powerball frequency data available.")
         return
 
+    table_powerball_frequency = Table(title="Powerball Frequency Graph")
+    table_powerball_frequency.add_column("Powerball Number", justify="center", style="magenta")
+    table_powerball_frequency.add_column("Frequency", justify="left", style="cyan")
     max_freq = max(powerball_frequency.values())
     for number in sorted(powerball_frequency.keys()):
         bar = "#" * (powerball_frequency[number] * 50 // max_freq)  # Scale bar length to a max of 50
-        print(f"{number:2}: {bar} ({powerball_frequency[number]})")
+        table_powerball_frequency.add_row(f"{number}", f"{bar} ({powerball_frequency[number]})")
+    console.print(table_powerball_frequency)
 
 def draw_distribution_graph(distribution):
+    table_distribution_graph = Table(title="Odd-Even Distribution Graph Probability")
+    table_distribution_graph.add_column("Odd Count", justify="center", style="magenta")
+    table_distribution_graph.add_column("Even Count", justify="center", style="cyan")
+    table_distribution_graph.add_column("Probability", justify="left", style="green")
     max_prob = max(distribution.values())
     for key in sorted(distribution.keys()):
         bar = "#" * int(distribution[key] * 50 / max_prob)  # Scale bar length to a max of 50
-        print(f"{key[0]} odd, {key[1]} even: {bar} ({distribution[key]:.4f})")
+        table_distribution_graph.add_row(f"{key[0]}", f"{key[1]}", f"{bar} ({distribution[key] * 100:.2f}%)")
+    console.print(table_distribution_graph)
 
 def probability_distribution(picknumber):
     total_possibilities = 2 ** picknumber
@@ -216,73 +233,81 @@ def probability_distribution(picknumber):
     return distribution
 
 def draw_odd_even_distribution_graph(odd_even_counts, picknumber):
+    table_odd_even_distribution = Table(title="Odd-Even Distribution from Previous Draws")
+    table_odd_even_distribution.add_column("Odd Count", justify="center", style="magenta")
+    table_odd_even_distribution.add_column("Even Count", justify="center", style="cyan")
+    table_odd_even_distribution.add_column("Actual drawn", justify="left", style="green")
     max_count = max(odd_even_counts.values())
 
     for odd_count in range(picknumber + 1):
         even_count = picknumber - odd_count
         count = odd_even_counts.get((odd_count, even_count), 0)
         bar = "#" * (count * 50 // max_count)  # Scale bar length to a max of 50
-        print(f"{odd_count} odd, {even_count} even: {bar} ({count})")
+        table_odd_even_distribution.add_row(f"{odd_count}", f"{even_count}", f"{bar} ({count})")
+    console.print(table_odd_even_distribution)
 
-def distribution_consecutive_check(numbers, count=3):
-    # Sort the numbers to ensure they are in ascending order
-    if POWERBALL:
-        powerball_num = numbers[-1]
-        numbers.pop(-1)
-    numbers.sort()
+def display_suggested_numbers(lotto_numbers, count=3):
+    table_suggested_numbers = Table(title="Suggested Lottery Numbers")
+    table_suggested_numbers.add_column("Odd Count", justify="center", style="magenta")
+    table_suggested_numbers.add_column("Even Count", justify="center", style="cyan")
+    table_suggested_numbers.add_column("Suggested Numbers", justify="left", style="green")
+    table_suggested_numbers.add_column("Powerball Number", justify="left", style="blue")
+    table_suggested_numbers.add_column("Consecutive Count", justify="left", style="yellow")
 
-    # Initialize a counter for consecutive numbers
-    consecutive_count = 1
+    for numbers in lotto_numbers:
+        # Sort the numbers to ensure they are in ascending order
+        if POWERBALL:
+            powerball_num = numbers[-1]
+            numbers.pop(-1)
+        numbers.sort()
 
-    # Iterate through the sorted list and check for consecutive sequences
-    for i in range(1, len(numbers)):
-        if numbers[i] == numbers[i - 1] + 1:
-            consecutive_count += 1
-            if consecutive_count >= count:
-                break
-        else:
-            consecutive_count = 1  # Reset counter if the sequence breaks
+        # Initialize a counter for consecutive numbers
+        consecutive_count = 1
 
-    # Count the number of odd numbers
-    odd_count = 0
-    for pick in numbers:
-        if pick % 2 != 0:
-            odd_count += 1
+        # Iterate through the sorted list and check for consecutive sequences
+        for i in range(1, len(numbers)):
+            if numbers[i] == numbers[i - 1] + 1:
+                consecutive_count += 1
+                if consecutive_count >= count:
+                    break
+            else:
+                consecutive_count = 1  # Reset counter if the sequence breaks
 
-    s = ""
-    if odd_count >= 1:
-        s = f"{odd_count} odd, {len(numbers) - odd_count} even: {numbers}"
-    if POWERBALL:
-        s += f" {powerball_num}"
-    if consecutive_count >= count:
-        s += " (" + str(consecutive_count) + " consecutive numbers found)"
-    return s
+        # Count the number of odd numbers
+        odd_count = 0
+        for pick in numbers:
+            if pick % 2 != 0:
+                odd_count += 1
+
+        table_suggested_numbers.add_row(
+            str(odd_count),
+            str(len(numbers) - odd_count),
+            str(numbers),
+            str(powerball_num) if POWERBALL else "",
+            str(consecutive_count) if consecutive_count >= count else "",
+        )
+    console.print(table_suggested_numbers)
+    
 
 # Load lottery data based on LOTTO value
 frequency, powerball_frequency, draws = load_lotto_data(LOTTO)
 
 # Draw frequency graph
-print("\nFrequency Graph:")
 draw_frequency_graph(frequency)
 
 if POWERBALL:
-    print("\nPowerball Frequency Graph:")
     draw_powerball_frequency_graph(powerball_frequency)
 
 # Calculate and display distribution probabilities
 distribution = probability_distribution(PICKNUMBER)
-print(f"\nProbability Distribution Graph for PICKNUMBER={PICKNUMBER}:")
 draw_distribution_graph(distribution)
 
 # Count the odd/even distribution
 odd_even_counts = count_odd_even_distribution(draws, PICKNUMBER)
 
 # Draw the odd/even distribution graph
-print(f"\nOdd-Even Distribution for PICKNUMBER={PICKNUMBER} based from previous draws:")
 draw_odd_even_distribution_graph(odd_even_counts, PICKNUMBER)
 
 # Generate and display lottery numbers
 lottery_numbers = generate_numbers(PICKNUMBER, MAXNUMBER, POWERBALL, MAXNUMBERP, frequency, powerball_frequency, draws)
-print(f"\nSuggested lottery numbers, weights ({USEWEIGHTS}):")
-for lottery_number in lottery_numbers:
-    print(distribution_consecutive_check(lottery_number))
+display_suggested_numbers(lottery_numbers)
