@@ -27,8 +27,16 @@ if ```USEWEIGHT``` is set to true, it will use the historical draws as weights t
 ## Command line
 to override the .env file, use it from the command line:
 ```bash
-SUGGEST=10 python ozlottories.py
+LOTTO=tuesday SUGGEST=10 python ozlottories.py
 ```
 
 ## Sample output
 ![Sample output of the script](https://raw.githubusercontent.com/111110100/ozlottopy/main/sample.png)
+
+## Statistics script
+Use the ozstats.py script to generate some statistical information that you can use to base your numbers from:
+
+### Usage
+```bash
+LOTTO=tuesday python ozstats.py
+```
