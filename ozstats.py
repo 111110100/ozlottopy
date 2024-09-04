@@ -186,7 +186,6 @@ def display_distribution_graph(distribution):
     max_prob = max(distribution.values())
     for key in sorted(distribution.keys()):
         bar = "#" * int(distribution[key] * 50 / max_prob)  # Scale bar length to a max of 50
-        #table_distribution_graph.add_row(f"{key[0]}", f"{key[1]}", f"{bar} ({distribution[key]:.4f})")
         table_distribution_graph.add_row(f"{key[0]}", f"{key[1]}", f"{bar} ({distribution[key] * 100:.2f}%)")
     console.print(table_distribution_graph)
 
