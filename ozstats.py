@@ -25,7 +25,7 @@ def load_lotto_data():
         picknumber = 7
         maxnumber = 35
         filename = 'thursday.csv'
-        cols_to_use = ['#1', '#2', '#3', '#4', '#5', '#6', '#7', 'PB']
+        cols_to_use = ['#1', '#2', '#3', '#4', '#5', '#6', '#7']
     elif lotto_type == 'saturday':
         picknumber = 6
         maxnumber = 45
