@@ -157,7 +157,7 @@ def display_odd_even_distribution_graph(odd_even_counts, picknumber):
     table_odd_even_distribution = Table(title="Odd-Even Distribution from Previous Draws")
     table_odd_even_distribution.add_column("Odd Count", justify="center", style="magenta")
     table_odd_even_distribution.add_column("Even Count", justify="center", style="cyan")
-    table_odd_even_distribution.add_column("Frequency", justify="left", style="green")
+    table_odd_even_distribution.add_column("Actual drawn", justify="left", style="green")
     max_count = max(odd_even_counts.values())
 
     for odd_count in range(picknumber + 1):
