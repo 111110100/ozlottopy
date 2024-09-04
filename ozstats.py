@@ -179,7 +179,7 @@ def probability_distribution(picknumber):
     return distribution
 
 def display_distribution_graph(distribution):
-    table_distribution_graph = Table(title="Distribution Graph Probability")
+    table_distribution_graph = Table(title="Odd-Even Distribution Graph Probability")
     table_distribution_graph.add_column("Odd Count", justify="center", style="magenta")
     table_distribution_graph.add_column("Even Count", justify="center", style="cyan")
     table_distribution_graph.add_column("Probability", justify="left", style="green")
