@@ -5,22 +5,26 @@ If you have historical data of winning lotto numbers from other countries, you c
 
 ## Historical draws
 Historical draws were taken from the following sources
-|Lotto|Source|
-|-|-|
-|Tuesday|[Oz Lotto](https://gnetwork.com.au/oz-lotto-results/)
-|Thursday|[Powerball](https://gnetwork.com.au/powerball-results/)
-|Saturday|[Tatts](https://gnetwork.com.au/lotto-results/)
++----------|---------------------------------------------------------+
+| Lotto    | Source                                                  |
++==========|=========================================================+
+| Tuesday  | [Oz Lotto](https://gnetwork.com.au/oz-lotto-results/)   |
+| Thursday | [Powerball](https://gnetwork.com.au/powerball-results/) |
+| Saturday | [Tatts](https://gnetwork.com.au/lotto-results/)         |
++----------|---------------------------------------------------------+
 
 ## Text-based bar graph
 The script also generates a bar graph with the drawn frequency of each number. These frequencies can used as weights to help suggest numbers if ```USEWEIGHTS``` is set to ```true```. It also generates probability distribution of winning odd/even number combinations vs the actual drawn numbers.
 
 ## Environment variables
 You can use a .env file with the following values:
-|Key|Value|
-|-|-|
-|SUGGEST|5|
-|LOTTO|tuesday/thursday/saturday|
-|USEWEIGHT|true/false|
++-----------|---------------------------+
+| Key       | Value                     |
++===========|===========================+
+| SUGGEST   | 5                         |
+| LOTTO     | tuesday/thursday/saturday |
+| USEWEIGHT | true/false                |
++-----------|---------------------------+
 
 if ```USEWEIGHT``` is set to true, it will use the historical draws as weights to randomly select numbers.
 
