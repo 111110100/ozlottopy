@@ -1,7 +1,7 @@
 # OZ Lotto
-Just for fun Oz Lotto (Australia) script. Generates lottory numbers based on probability to pick a set of numbers from a 6 numbered draw, with half of them odd and half of them even. There's a ***30%*** chance that the winning combination numbers contain half even and half odd. There's a ***25%*** chance that 4 are odd, 2 are even and ***22%*** chance that 4 are even, and 2 are odd. The probability will adjust based on the value of PICKNUMBER.
+Just for fun Oz Lotto (Australia) script. Generates lottory numbers based on probability to pick a set of numbers from a 6 numbered draw, with half of them odd and half of them even. There's a ***30%*** chance that the winning combination numbers contain half even and half odd. There's a ***25%*** chance that 4 are odd, 2 are even and ***22%*** chance that 4 are even, and 2 are odd.
 
-If you have historical data of winning lotto numbers from other countries, you can use that as long as it follows the CSV format similar to the one in this repo.
+If you have historical data of winning lotto numbers from other countries, you can use that as long as it follows the CSV format similar to the one in this repo. You just need to make some adjustments to the script.
 
 ## Historical draws
 Historical draws were taken from the following sources
