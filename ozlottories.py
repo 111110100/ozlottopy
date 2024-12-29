@@ -92,13 +92,13 @@ def generate_numbers(picknumber, maxnumber, powerball=False, maxnumberp=20, freq
         # Calculate historical odd/even distribution for each set of numbers
         if historical_data:
             odd_even_distribution = calculate_historical_distribution(historical_data, picknumber)
-            
+
             # Ensure that at least 2 odd and 2 even numbers are included
             valid_distributions = {k: v for k, v in odd_even_distribution.items() if k[0] >= 2 and k[1] >= 2}
-            
+
             if not valid_distributions:
                 raise ValueError("No valid odd/even distributions found in historical data.")
-            
+
             selected_distribution = random.choices(list(valid_distributions.keys()), weights=list(valid_distributions.values()), k=1)[0]
             odd_count, even_count = selected_distribution
         else:
@@ -115,7 +115,7 @@ def generate_numbers(picknumber, maxnumber, powerball=False, maxnumberp=20, freq
         # Filter odd and even numbers
         odds = [num for num in range(1, maxnumber + 1) if num % 2 != 0]
         evens = [num for num in range(1, maxnumber + 1) if num % 2 == 0]
-        
+
         # Use frequency as weights to select odd and even numbers
         if USEWEIGHTS:
             chosen_odds = random.choices(odds, weights=[frequency.get(num, 1) for num in odds], k=odd_count)
@@ -123,32 +123,32 @@ def generate_numbers(picknumber, maxnumber, powerball=False, maxnumberp=20, freq
         else:
             chosen_odds = random.choices(odds, k=odd_count)
             chosen_evens = random.choices(evens, k=even_count)
-        
+
         # Ensure no duplicates in the chosen numbers
         chosen_odds = list(set(chosen_odds))
         chosen_evens = list(set(chosen_evens))
-        
+
         # If duplicates were removed and the list lengths are short, replenish with random choices
         while len(chosen_odds) < odd_count:
             new_odd = random.choices(odds, weights=[frequency.get(num, 1) for num in odds], k=1)[0]
             if new_odd not in chosen_odds:
                 chosen_odds.append(new_odd)
-                
+
         while len(chosen_evens) < even_count:
             new_even = random.choices(evens, weights=[frequency.get(num, 1) for num in evens], k=1)[0]
             if new_even not in chosen_evens:
                 chosen_evens.append(new_even)
-        
+
         numbers = sorted(chosen_odds + chosen_evens)
-        
+
         # Add powerball number if required, ensuring no repeat
         if powerball:
             available_powerballs = set(range(1, maxnumberp + 1)) - set(numbers)
             powerball_num = random.choices(list(available_powerballs), weights=[powerball_frequency.get(num, 1) for num in available_powerballs], k=1)[0]
             numbers.append(powerball_num)
-        
+
         suggested_numbers.append(numbers)
-    
+
     return suggested_numbers
 
 def count_odd_even_distribution(data, picknumber):
@@ -229,6 +229,7 @@ def display_suggested_numbers(lotto_numbers, count=3):
     table_suggested_numbers.add_column("Powerball Number", justify="left", style="blue")
     table_suggested_numbers.add_column("Consecutive Count", justify="left", style="yellow")
 
+    row = 1
     for numbers in lotto_numbers:
         # Sort the numbers to ensure they are in ascending order
         if POWERBALL:
@@ -254,15 +255,51 @@ def display_suggested_numbers(lotto_numbers, count=3):
             if pick % 2 != 0:
                 odd_count += 1
 
+        if row % 2 == 0:
+            odd_count_s = f"[b]{odd_count}[/b]"
+            even_count_s = f"[b]{len(numbers) - odd_count}[/b]"
+            numbers_s = f"[b]{numbers}[/b]"
+            powerball_num_s = f"[b]{powerball_num}[/b]" if POWERBALL else ""
+            consecutive_count_s = f"[b]{consecutive_count}[/b]" if consecutive_count >= count else ""
+        else:
+            odd_count_s = f"{odd_count}"
+            even_count_s = f"{len(numbers) - odd_count}"
+            numbers_s = f"{numbers}"
+            powerball_num_s = f"{powerball_num}" if POWERBALL else ""
+            consecutive_count_s = f"{consecutive_count}" if consecutive_count >= count else ""
+
         table_suggested_numbers.add_row(
-            str(odd_count),
-            str(len(numbers) - odd_count),
-            str(numbers),
-            str(powerball_num) if POWERBALL else "",
-            str(consecutive_count) if consecutive_count >= count else "",
+            odd_count_s,
+            even_count_s,
+            numbers_s,
+            powerball_num_s,
+            consecutive_count_s
         )
+
+        row += 1
+
     console.print(table_suggested_numbers)
-    
+
+
+def factorial(n):
+    final_product = 1
+    for i in range(n, 0, -1):
+        final_product *= i
+    return final_product
+
+
+def combinatons(n, k):
+    numerator = factorial(n)
+    denominator = factorial(k) * factorial(n-k)
+    return numerator / denominator
+
+
+def ticket_probability(tickets_played):
+    console.rule("[bold red]Probabilty of winning")
+    total_outcomes = combinatons(MAXNUMBER, PICKNUMBER)
+    combinations_simplified = round(total_outcomes / tickets_played)
+    console.print(f"Chances of winning with [red]{SUGGEST}[/red] tickets is [blue]1[/blue] in [green]{combinations_simplified:,}[/green]")
+
 
 # Load lottery data based on LOTTO value
 frequency, powerball_frequency, draws = load_lotto_data(LOTTO)
@@ -286,3 +323,6 @@ draw_odd_even_distribution_graph(odd_even_counts, PICKNUMBER)
 # Generate and display lottery numbers
 lottery_numbers = generate_numbers(PICKNUMBER, MAXNUMBER, POWERBALL, MAXNUMBERP, frequency, powerball_frequency, draws)
 display_suggested_numbers(lottery_numbers)
+
+# Show probability of winning
+ticket_probability(SUGGEST)
