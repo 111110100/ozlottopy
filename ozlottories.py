@@ -10,11 +10,13 @@ from rich.table import Table
 # Load environment variables
 load_dotenv()
 
-console = Console()
-
 # Set default values based on LOTTO
 LOTTO = os.getenv("LOTTO", "").lower()
 USEWEIGHTS = os.getenv("USEWEIGHTS", "false").lower() == "true"
+SUGGEST = int(os.getenv("SUGGEST", 1))
+
+# Init rich text console
+console = Console()
 
 if LOTTO == "tuesday":
     PICKNUMBER = 7
@@ -33,8 +35,6 @@ elif LOTTO == "saturday":
     POWERBALL = False
 else:
     raise ValueError("Invalid value for LOTTO. Choose between 'tuesday', 'thursday', or 'saturday'.")
-
-SUGGEST = int(os.getenv("SUGGEST", 1))
 
 def load_lotto_data(lotto_type):
     frequency = Counter()
@@ -281,22 +281,9 @@ def display_suggested_numbers(lotto_numbers, count=3):
     console.print(table_suggested_numbers)
 
 
-def factorial(n):
-    final_product = 1
-    for i in range(n, 0, -1):
-        final_product *= i
-    return final_product
-
-
-def combinatons(n, k):
-    numerator = factorial(n)
-    denominator = factorial(k) * factorial(n-k)
-    return numerator / denominator
-
-
 def ticket_probability(tickets_played):
     console.rule("[bold red]Probabilty of winning")
-    total_outcomes = combinatons(MAXNUMBER, PICKNUMBER)
+    total_outcomes = comb(MAXNUMBER, PICKNUMBER)
     combinations_simplified = round(total_outcomes / tickets_played)
     console.print(f"Chances of winning with [red]{SUGGEST}[/red] tickets is [blue]1[/blue] in [green]{combinations_simplified:,}[/green]")
 
