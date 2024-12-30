@@ -284,8 +284,10 @@ def display_suggested_numbers(lotto_numbers, count=3):
 def ticket_probability(tickets_played):
     console.rule("[bold red]Probabilty of winning")
     total_outcomes = comb(MAXNUMBER, PICKNUMBER)
+    if POWERBALL:
+        total_outcomes = total_outcomes * comb(MAXNUMBERP, 1)
     combinations_simplified = round(total_outcomes / tickets_played)
-    console.print(f"Chances of winning with [red]{SUGGEST}[/red] tickets is [blue]1[/blue] in [green]{combinations_simplified:,}[/green]")
+    console.print(f"Chances of winning with [red]{SUGGEST}[/red] tickets is [blue]{SUGGEST}[/blue] in [green]{combinations_simplified:,}[/green]")
 
 
 # Load lottery data based on LOTTO value
