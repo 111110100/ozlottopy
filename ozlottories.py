@@ -36,6 +36,7 @@ elif LOTTO == "saturday":
 else:
     raise ValueError("Invalid value for LOTTO. Choose between 'tuesday', 'thursday', or 'saturday'.")
 
+
 def load_lotto_data(lotto_type):
     frequency = Counter()
     powerball_frequency = Counter()
@@ -68,6 +69,7 @@ def load_lotto_data(lotto_type):
 
     return frequency, powerball_frequency, draws
 
+
 def calculate_historical_distribution(data, picknumber):
     odd_even_counts = Counter()
 
@@ -84,6 +86,7 @@ def calculate_historical_distribution(data, picknumber):
     probabilities = {k: v / total_draws for k, v in odd_even_counts.items()}
 
     return probabilities
+
 
 def generate_numbers(picknumber, maxnumber, powerball=False, maxnumberp=20, frequency=None, powerball_frequency=None, historical_data=None):
     suggested_numbers = []
@@ -151,6 +154,7 @@ def generate_numbers(picknumber, maxnumber, powerball=False, maxnumberp=20, freq
 
     return suggested_numbers
 
+
 def count_odd_even_distribution(data, picknumber):
     odd_even_counts = Counter()
 
@@ -161,6 +165,7 @@ def count_odd_even_distribution(data, picknumber):
 
     return odd_even_counts
 
+
 def draw_frequency_graph(frequency):
     table_frequency = Table(title="Odd-Even Frequency Graph")
     table_frequency.add_column("Number", justify="center", style="magenta")
@@ -170,6 +175,7 @@ def draw_frequency_graph(frequency):
         bar = "#" * (frequency[number] * 50 // max_freq)  # Scale bar length to a max of 50
         table_frequency.add_row(f"{number}", f"{bar} ({frequency[number]})")
     console.print(table_frequency)
+
 
 def draw_powerball_frequency_graph(powerball_frequency):
     if not powerball_frequency:
@@ -185,6 +191,7 @@ def draw_powerball_frequency_graph(powerball_frequency):
         table_powerball_frequency.add_row(f"{number}", f"{bar} ({powerball_frequency[number]})")
     console.print(table_powerball_frequency)
 
+
 def draw_distribution_graph(distribution):
     table_distribution_graph = Table(title="Odd-Even Distribution Graph Probability")
     table_distribution_graph.add_column("Odd Count", justify="center", style="magenta")
@@ -196,6 +203,7 @@ def draw_distribution_graph(distribution):
         table_distribution_graph.add_row(f"{key[0]}", f"{key[1]}", f"{bar} ({distribution[key] * 100:.2f}%)")
     console.print(table_distribution_graph)
 
+
 def probability_distribution(picknumber):
     total_possibilities = 2 ** picknumber
 
@@ -206,6 +214,7 @@ def probability_distribution(picknumber):
         distribution[(odd_count, even_count)] = probability
 
     return distribution
+
 
 def draw_odd_even_distribution_graph(odd_even_counts, picknumber):
     table_odd_even_distribution = Table(title="Odd-Even Distribution from Previous Draws")
@@ -220,6 +229,7 @@ def draw_odd_even_distribution_graph(odd_even_counts, picknumber):
         bar = "#" * (count * 50 // max_count)  # Scale bar length to a max of 50
         table_odd_even_distribution.add_row(f"{odd_count}", f"{even_count}", f"{bar} ({count})")
     console.print(table_odd_even_distribution)
+
 
 def display_suggested_numbers(lotto_numbers, count=3):
     table_suggested_numbers = Table(title="Suggested Lottery Numbers")
@@ -290,28 +300,29 @@ def ticket_probability(tickets_played):
     console.print(f"Chances of winning with [red]{SUGGEST}[/red] tickets is [blue]{SUGGEST}[/blue] in [green]{combinations_simplified:,}[/green]")
 
 
-# Load lottery data based on LOTTO value
-frequency, powerball_frequency, draws = load_lotto_data(LOTTO)
+if __name__ == "__main__":
+    # Load lottery data based on LOTTO value
+    frequency, powerball_frequency, draws = load_lotto_data(LOTTO)
 
-# Draw frequency graph
-draw_frequency_graph(frequency)
+    # Draw frequency graph
+    draw_frequency_graph(frequency)
 
-if POWERBALL:
-    draw_powerball_frequency_graph(powerball_frequency)
+    if POWERBALL:
+        draw_powerball_frequency_graph(powerball_frequency)
 
-# Calculate and display distribution probabilities
-distribution = probability_distribution(PICKNUMBER)
-draw_distribution_graph(distribution)
+    # Calculate and display distribution probabilities
+    distribution = probability_distribution(PICKNUMBER)
+    draw_distribution_graph(distribution)
 
-# Count the odd/even distribution
-odd_even_counts = count_odd_even_distribution(draws, PICKNUMBER)
+    # Count the odd/even distribution
+    odd_even_counts = count_odd_even_distribution(draws, PICKNUMBER)
 
-# Draw the odd/even distribution graph
-draw_odd_even_distribution_graph(odd_even_counts, PICKNUMBER)
+    # Draw the odd/even distribution graph
+    draw_odd_even_distribution_graph(odd_even_counts, PICKNUMBER)
 
-# Generate and display lottery numbers
-lottery_numbers = generate_numbers(PICKNUMBER, MAXNUMBER, POWERBALL, MAXNUMBERP, frequency, powerball_frequency, draws)
-display_suggested_numbers(lottery_numbers)
+    # Generate and display lottery numbers
+    lottery_numbers = generate_numbers(PICKNUMBER, MAXNUMBER, POWERBALL, MAXNUMBERP, frequency, powerball_frequency, draws)
+    display_suggested_numbers(lottery_numbers)
 
-# Show probability of winning
-ticket_probability(SUGGEST)
+    # Show probability of winning
+    ticket_probability(SUGGEST)

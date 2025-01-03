@@ -9,6 +9,7 @@ from math import comb
 
 console = Console()
 
+
 def load_lotto_data():
     """
     Loads lottery data based on the LOTTO environment variable.
@@ -45,12 +46,14 @@ def load_lotto_data():
 
     return data, picknumber, maxnumber
 
+
 def find_consecutive(draw, n):
     consecutive_count = 0
     for i in range(len(draw) - n + 1):
         if all(draw[i + j] + 1 == draw[i + j + 1] for j in range(n - 1)):
             consecutive_count += 1
     return consecutive_count
+
 
 def analyze_draws(data):
     draw_count = len(data)
@@ -103,14 +106,18 @@ def analyze_draws(data):
         "all_triplets": all_triplets,
     }
 
+
 def calculate_frequency(all_numbers):
     return Counter(all_numbers)
+
 
 def find_least_often_picked(number_frequency):
     return number_frequency.most_common()[-1:]
 
+
 def find_cold_numbers(number_frequency, maxnumber):
     return [num for num in range(1, maxnumber + 1) if num not in number_frequency]
+
 
 def display_analysis_results(analysis, number_frequency, maxnumber):
     console.rule("[bold red]Historical Analysis Results")
@@ -153,6 +160,7 @@ def display_analysis_results(analysis, number_frequency, maxnumber):
     display_common_consecutive_pairs(analysis['consecutive_pairs'])
     display_common_consecutive_triplets(analysis['consecutive_triplets'])
 
+
 def display_odd_even_distribution_graph(odd_even_counts, picknumber):
     table_odd_even_distribution = Table(title="Odd-Even Distribution from Previous Draws")
     table_odd_even_distribution.add_column("Odd Count", justify="center", style="magenta")
@@ -167,6 +175,7 @@ def display_odd_even_distribution_graph(odd_even_counts, picknumber):
         table_odd_even_distribution.add_row(f"{odd_count}", f"{even_count}", f"{bar} ({count})")
     console.print(table_odd_even_distribution)
 
+
 def probability_distribution(picknumber):
     total_possibilities = 2 ** picknumber
 
@@ -177,6 +186,7 @@ def probability_distribution(picknumber):
         distribution[(odd_count, even_count)] = probability
 
     return distribution
+
 
 def display_distribution_graph(distribution):
     table_distribution_graph = Table(title="Odd-Even Distribution Graph Probability")
@@ -189,6 +199,7 @@ def display_distribution_graph(distribution):
         table_distribution_graph.add_row(f"{key[0]}", f"{key[1]}", f"{bar} ({distribution[key] * 100:.2f}%)")
     console.print(table_distribution_graph)
 
+
 def display_common_pairs(all_pairs):
     table_pairs = Table(title="Most Common Pairs")
     table_pairs.add_column("Pair", justify="center", style="magenta")
@@ -197,6 +208,7 @@ def display_common_pairs(all_pairs):
     for pair, freq in all_pairs.most_common(5):
         table_pairs.add_row(f"{pair}", f"{freq}")
     console.print(table_pairs)
+
 
 def display_common_triplets(all_triplets):
     table_triplets = Table(title="Most Common Triplets")
@@ -207,6 +219,7 @@ def display_common_triplets(all_triplets):
         table_triplets.add_row(f"{triplet}", f"{freq}")
     console.print(table_triplets)
 
+
 def display_common_consecutive_pairs(consecutive_pairs):
     table_consec_pairs = Table(title="Most Common Consecutive Pairs")
     table_consec_pairs.add_column("Consecutive Pair", justify="center", style="magenta")
@@ -216,6 +229,7 @@ def display_common_consecutive_pairs(consecutive_pairs):
         table_consec_pairs.add_row(f"{consec_pair}", f"{freq}")
     console.print(table_consec_pairs)
 
+
 def display_common_consecutive_triplets(consecutive_triplets):
     table_consec_triplets = Table(title="Most Common Consecutive Triplets")
     table_consec_triplets.add_column("Consecutive Triplet", justify="center", style="magenta")
@@ -224,6 +238,7 @@ def display_common_consecutive_triplets(consecutive_triplets):
     for consec_triplet, freq in consecutive_triplets.most_common(5):
         table_consec_triplets.add_row(f"{consec_triplet}", f"{freq}")
     console.print(table_consec_triplets)
+
 
 if __name__ == "__main__":
     data, picknumber, maxnumber = load_lotto_data()
