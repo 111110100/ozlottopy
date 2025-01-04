@@ -7,35 +7,6 @@ from dotenv import load_dotenv
 from rich.console import Console
 from rich.table import Table
 
-# Load environment variables
-load_dotenv()
-
-# Set default values based on LOTTO
-LOTTO = os.getenv("LOTTO", "").lower()
-USEWEIGHTS = os.getenv("USEWEIGHTS", "false").lower() == "true"
-SUGGEST = int(os.getenv("SUGGEST", 1))
-
-# Init rich text console
-console = Console()
-
-if LOTTO == "tuesday":
-    PICKNUMBER = 7
-    MAXNUMBER = 47
-    MAXNUMBERP = None  # Not applicable for Tuesday
-    POWERBALL = False
-elif LOTTO == "thursday":
-    PICKNUMBER = 7
-    MAXNUMBER = 35
-    MAXNUMBERP = 20
-    POWERBALL = True
-elif LOTTO == "saturday":
-    PICKNUMBER = 6
-    MAXNUMBER = 45
-    MAXNUMBERP = None  # Not applicable for Saturday
-    POWERBALL = False
-else:
-    raise ValueError("Invalid value for LOTTO. Choose between 'tuesday', 'thursday', or 'saturday'.")
-
 
 def load_lotto_data(lotto_type):
     frequency = Counter()
@@ -301,6 +272,35 @@ def ticket_probability(tickets_played):
 
 
 if __name__ == "__main__":
+    # Load environment variables
+    load_dotenv()
+
+    # Set default values based on LOTTO
+    LOTTO = os.getenv("LOTTO", "").lower()
+    USEWEIGHTS = os.getenv("USEWEIGHTS", "false").lower() == "true"
+    SUGGEST = int(os.getenv("SUGGEST", 1))
+
+    # Init rich text console
+    console = Console()
+
+    if LOTTO == "tuesday":
+        PICKNUMBER = 7
+        MAXNUMBER = 47
+        MAXNUMBERP = None  # Not applicable for Tuesday
+        POWERBALL = False
+    elif LOTTO == "thursday":
+        PICKNUMBER = 7
+        MAXNUMBER = 35
+        MAXNUMBERP = 20
+        POWERBALL = True
+    elif LOTTO == "saturday":
+        PICKNUMBER = 6
+        MAXNUMBER = 45
+        MAXNUMBERP = None  # Not applicable for Saturday
+        POWERBALL = False
+    else:
+        raise ValueError("Invalid value for LOTTO. Choose between 'tuesday', 'thursday', or 'saturday'.")
+
     # Load lottery data based on LOTTO value
     frequency, powerball_frequency, draws = load_lotto_data(LOTTO)
 
