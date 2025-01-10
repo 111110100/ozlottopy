@@ -23,7 +23,7 @@ def load_lotto_data(lotto_type):
         csv_file = "saturday.csv"
         columns = ["#1", "#2", "#3", "#4", "#5", "#6"]
     else:
-        return frequency, powerball_frequency
+        raise ValueError("Invalid LOTTO type specified. Choose from 'tuesday', 'thursday', or 'saturday'.")
 
     with open(csv_file, mode='r') as file:
         reader = csv.DictReader(file)
