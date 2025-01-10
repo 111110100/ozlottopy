@@ -8,8 +8,6 @@ from rich.console import Console
 from rich.table import Table
 from math import comb
 
-console = Console()
-
 
 def load_lotto_data():
     """
@@ -246,6 +244,9 @@ def display_common_consecutive_triplets(consecutive_triplets):
 
 
 if __name__ == "__main__":
+    # Init rich text console
+    console = Console()
+
     data, picknumber, maxnumber = load_lotto_data()
     analysis = analyze_draws(data)
     number_frequency = calculate_frequency(analysis['all_numbers'])
