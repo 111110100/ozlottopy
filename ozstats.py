@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from dotenv import load_dotenv
 from collections import Counter
 from itertools import combinations
 from rich.progress import Progress
@@ -15,6 +16,10 @@ def load_lotto_data():
     Loads lottery data based on the LOTTO environment variable.
     Returns the DataFrame, picknumber, maxnumber, and a list of number columns.
     """
+    # Load environment variables
+    load_dotenv()
+
+    # Determine which lotto to show stats for
     lotto_type = os.getenv('LOTTO')
 
     if lotto_type == 'tuesday':
