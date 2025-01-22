@@ -40,3 +40,9 @@ Use the ozstats.py script to generate some statistical information that you can 
 ```bash
 LOTTO=tuesday python ozstats.py
 ```
+
+## Simulation script
+This script simulates a draw, generates tickets and checks if a ticket wins in a division.
+
+### Sample output
+![Sample output of ozsim script](https://raw.githubusercontent.com/111110100/ozlottopy/main/ozsim_screenshot.png)
