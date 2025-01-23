@@ -44,5 +44,20 @@ LOTTO=tuesday python ozstats.py
 ## Simulation script
 This script simulates a draw, generates tickets and checks if a ticket wins in a division.
 
+### Command line
+```bash
+LOTTO=tuesday GAMES=18 ozsimp.py
+# To use your own winning combinations
+LOTTO=tuesday GAMES=18 WINNING=8,18,22,24,37,41,44,1,26,39
+# For tuesday, the last 3 digits are the supplementary numbers
+# For thursday, the last digit is the powerball number
+# For saturday, the last 2 digits are the supplementary numbers
+```
+
+### Sample output
+![Sample output of ozsim script](https://raw.githubusercontent.com/111110100/ozlottopy/main/ozsim_screenshot.png)
+## Simulation script
+This script simulates a draw, generates tickets and checks if a ticket wins in a division.
+
 ### Sample output
 ![Sample output of ozsim script](https://raw.githubusercontent.com/111110100/ozlottopy/main/ozsim_screenshot.png)
