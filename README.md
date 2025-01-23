@@ -56,8 +56,6 @@ LOTTO=tuesday GAMES=18 WINNING=8,18,22,24,37,41,44,1,26,39
 
 ### Sample output
 ![Sample output of ozsim script](https://raw.githubusercontent.com/111110100/ozlottopy/main/ozsim_screenshot.png)
+
 ## Simulation script
 This script simulates a draw, generates tickets and checks if a ticket wins in a division.
-
-### Sample output
-![Sample output of ozsim script](https://raw.githubusercontent.com/111110100/ozlottopy/main/ozsim_screenshot.png)
